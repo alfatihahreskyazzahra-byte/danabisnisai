@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DANABISNISAI</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="header"><h1>DANA<span>BISNIS</span>AI</h1><p>Service HP • Sayur & Bahan Dapur • Sedekah 2.5% dari Untung</p></div>
+
+<div class="grid">
+<div class="card blue"><small>TOTAL OMZET</small><b id="omzet">Rp 0</b></div>
+<div class="card"><small>TOTAL MODAL</small><b id="modal">Rp 0</b></div>
+<div class="card green"><small>UNTUNG BERSIH</small><b id="untungBersih">Rp 0</b></div>
+<div class="card pink"><small>DOMPET SEDEKAH</small><b id="sedekah">Rp 0</b></div>
+</div>
+
+<div class="box">
+<h3>➕ Catat Penjualan Baru</h3>
+<div class="row">
+<div><label>Tanggal</label><input type="date" id="tgl"></div>
+<div><label>Kategori</label><select id="kat"><option value="SERVICE HP">SERVICE HP</option><option value="SAYUR & BAHAN DAPUR">SAYUR & BAHAN DAPUR</option></select></div>
+</div>
+<label>Nama Barang / Jasa</label><input id="nama" placeholder="Contoh: Ganti LCD / Bayam 1 Ikat">
+<div class="row">
+<div><label>Harga Jual (Rp)</label><input type="number" id="jual" placeholder="0"></div>
+<div><label>Modal (Rp)</label><input type="number" id="modalInput" placeholder="0"></div>
+</div>
+<div class="hasil" id="preview">Isi Harga Jual & Modal, untung & sedekah akan dihitung otomatis.</div>
+<button class="btn" onclick="tambah()">SIMPAN PENJUALAN</button>
+</div>
+
+<div class="top">
+<button onclick="filterK('SEMUA',this)" class="active">Semua</button>
+<button onclick="filterK('SERVICE HP',this)">Service HP</button>
+<button onclick="filterK('SAYUR & BAHAN DAPUR',this)">Sayur</button>
+</div>
+
+<div class="box">
+<h3>📋 Riwayat Penjualan</h3>
+<input id="cari" placeholder="Cari nama barang..." oninput="render()">
+<div id="list"></div>
+<button onclick="exportCSV()" class="btn-outline">⬇ Download Laporan Excel (CSV)</button>
+<button onclick="hapusSemua()" class="btn-danger">Hapus Semua Data</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
