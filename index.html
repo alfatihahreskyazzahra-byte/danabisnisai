@@ -8,6 +8,19 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#16a34a">
 <link rel="apple-touch-icon" href="icon-192.png">
+<style>
+#btnSimpan{
+  width:100%;background:#16a34a;color:#fff;border:none;
+  padding:15px;border-radius:14px;font-weight:800;font-size:16px;
+  cursor:pointer;box-shadow:0 4px 12px rgba(22,163,74,.3);margin-top:12px;
+}
+#btnSimpan:active{ transform:scale(0.98); background:#15803d; }
+#btnBatal{
+  width:100%;background:#fff1f2;color:#dc2626;border:1.5px solid #fecaca;
+  padding:13px;border-radius:14px;font-weight:700;font-size:14px;
+  cursor:pointer;margin-top:10px;
+}
+</style>
 </head>
 <body>
 <div class="header"><h1>DANA<span>BISNIS</span>AI</h1><p>Service HP • Sayur & Bahan Dapur • Sedekah 2.5% dari Untung</p></div>
@@ -32,7 +45,7 @@
 </div>
 <div class="hasil" id="preview">Isi Harga Jual & Modal, untung & sedekah akan dihitung otomatis.</div>
 <button id="btnSimpan" onclick="tambah()">SIMPAN PENJUALAN</button>
-<button id="btnBatal" onclick="batalEdit()" style="display:none">BATAL EDIT</button>
+<button id="btnBatal" onclick="batalEdit()" style="display:none">✕ BATAL EDIT - Kembali ke Tambah Baru</button>
 </div>
 
 <div class="top">
