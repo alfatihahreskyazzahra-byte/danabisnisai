@@ -1,7 +1,7 @@
-// DANABISNISAI - Firebase
+// DANABISNISAI - Firebase - VERSI BARU ADA EDIT
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBKIHh8ETZEJl3lZ3wiyuNzPlGab580tTw",
@@ -18,13 +18,12 @@ const db = getFirestore(app);
 
 let semuaData = [];
 let filterAktif = 'SEMUA';
+let editId = null;
 
 const rupiah = (n) => "Rp " + Number(n||0).toLocaleString('id-ID');
 
-// Set tanggal hari ini
 document.getElementById('tgl').valueAsDate = new Date();
 
-// Hitung preview otomatis
 function hitungPreview(){
   const jual = Number(document.getElementById('jual').value||0);
   const modal = Number(document.getElementById('modalInput').value||0);
@@ -35,7 +34,6 @@ function hitungPreview(){
 document.getElementById('jual').addEventListener('input', hitungPreview);
 document.getElementById('modalInput').addEventListener('input', hitungPreview);
 
-// Login anonim
 signInAnonymously(auth).catch(e=>console.log(e.message));
 onAuthStateChanged(auth, (user)=>{
   if(user){
@@ -48,7 +46,7 @@ onAuthStateChanged(auth, (user)=>{
   }
 });
 
-// TAMBAH DATA
+// TAMBAH / SIMPAN EDIT
 window.tambah = async function(){
   const tgl = document.getElementById('tgl').value;
   const kat = document.getElementById('kat').value;
@@ -59,16 +57,55 @@ window.tambah = async function(){
   const untung = jual - modal;
   const sedekah = untung > 0 ? untung * 0.025 : 0;
   try{
-    await addDoc(collection(db, "penjualan"), {tanggal:tgl, kategori:kat, nama:nama, jual:jual, modal:modal, untung:untung, sedekah:sedekah});
+    if(editId){
+      await updateDoc(doc(db, "penjualan", editId), {tanggal:tgl, kategori:kat, nama:nama, jual:jual, modal:modal, untung:untung, sedekah:sedekah});
+      alert("Berhasil diupdate!");
+      batalEdit();
+    } else {
+      await addDoc(collection(db, "penjualan"), {tanggal:tgl, kategori:kat, nama:nama, jual:jual, modal:modal, untung:untung, sedekah:sedekah});
+      alert("Berhasil disimpan!");
+    }
     document.getElementById('nama').value="";
     document.getElementById('jual').value="";
     document.getElementById('modalInput').value="";
+    document.getElementById('tgl').valueAsDate = new Date();
     hitungPreview();
-    alert("Berhasil disimpan!");
   }catch(e){ alert("Gagal: "+e.message); }
 }
 
-// RENDER + FILTER + CARI
+// MULAI EDIT
+window.mulaiEdit = function(id){
+  const d = semuaData.find(x => x.id === id);
+  if(!d) return;
+  document.getElementById('tgl').value = d.tanggal;
+  document.getElementById('kat').value = d.kategori;
+  document.getElementById('nama').value = d.nama;
+  document.getElementById('jual').value = d.jual;
+  document.getElementById('modalInput').value = d.modal;
+  hitungPreview();
+  editId = id;
+  const btnSimpan = document.getElementById('btnSimpan');
+  if(btnSimpan) btnSimpan.innerText = "SIMPAN PERUBAHAN";
+  const btnBatal = document.getElementById('btnBatal');
+  if(btnBatal) btnBatal.style.display = "block";
+  window.scrollTo({top:0, behavior:'smooth'});
+  document.getElementById('nama').focus();
+}
+
+// BATAL EDIT
+window.batalEdit = function(){
+  editId = null;
+  document.getElementById('nama').value="";
+  document.getElementById('jual').value="";
+  document.getElementById('modalInput').value="";
+  document.getElementById('tgl').valueAsDate = new Date();
+  hitungPreview();
+  const btnSimpan = document.getElementById('btnSimpan');
+  if(btnSimpan) btnSimpan.innerText = "SIMPAN PENJUALAN";
+  const btnBatal = document.getElementById('btnBatal');
+  if(btnBatal) btnBatal.style.display = "none";
+}
+
 window.filterK = function(kat, el){
   filterAktif = kat;
   document.querySelectorAll('.top button').forEach(b=>b.classList.remove('active'));
@@ -79,7 +116,6 @@ window.filterK = function(kat, el){
 window.render = function(){
   const cari = document.getElementById('cari').value.toLowerCase();
   let totalOmzet=0, totalModal=0, totalUntung=0, totalSedekah=0;
-  // Hitung total dari SEMUA data (bukan yg difilter)
   semuaData.forEach(d=>{ totalOmzet+=Number(d.jual||0); totalModal+=Number(d.modal||0); totalUntung+=Number(d.untung||0); totalSedekah+=Number(d.sedekah||0); });
   document.getElementById('omzet').innerText = rupiah(totalOmzet);
   document.getElementById('modal').innerText = rupiah(totalModal);
@@ -97,13 +133,14 @@ window.render = function(){
   list.innerHTML = tampil.map(d=>`
     <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee">
       <div><b>${d.nama}</b><br><small>${d.tanggal} • ${d.kategori}</small><br><small>Jual ${rupiah(d.jual)} - Modal ${rupiah(d.modal)}</small></div>
-      <div style="text-align:right"><b style="color:#16a34a">${rupiah(d.untung)}</b><br><small>Sedekah ${rupiah(d.sedekah)}</small><br><button onclick="hapusSatu('${d.id}')" style="color:red;border:none;background:none;cursor:pointer">Hapus</button></div>
+      <div style="text-align:right"><b style="color:#16a34a">${rupiah(d.untung)}</b><br><small>Sedekah ${rupiah(d.sedekah)}</small><br><button onclick="mulaiEdit('${d.id}')" style="color:#2563eb;border:none;background:none;cursor:pointer;font-weight:bold">Edit</button> | <button onclick="hapusSatu('${d.id}')" style="color:red;border:none;background:none;cursor:pointer">Hapus</button></div>
     </div>
   `).join('');
 }
 
 window.hapusSatu = async function(id){
   if(confirm("Hapus data ini?")) await deleteDoc(doc(db, "penjualan", id));
+  if(editId === id) batalEdit();
 }
 
 window.hapusSemua = async function(){
