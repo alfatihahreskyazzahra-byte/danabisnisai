@@ -20,16 +20,41 @@
   padding:13px;border-radius:14px;font-weight:700;font-size:14px;
   cursor:pointer;margin-top:10px;
 }
+#btnSimpanBelanja{
+  width:100%;background:#ea580c;color:#fff;border:none;
+  padding:15px;border-radius:14px;font-weight:800;font-size:16px;
+  cursor:pointer;box-shadow:0 4px 12px rgba(234,88,12,.3);margin-top:12px;
+}
+#btnSimpanBelanja:active{ transform:scale(0.98); background:#c2410c; }
+#btnBatalBelanja{
+  width:100%;background:#fff7ed;color:#ea580c;border:1.5px solid #fed7aa;
+  padding:13px;border-radius:14px;font-weight:700;font-size:14px;
+  cursor:pointer;margin-top:10px;
+}
 </style>
 </head>
 <body>
 <div class="header"><h1>DANA<span>BISNIS</span>AI</h1><p>Service HP • Sayur & Bahan Dapur • Sedekah 2.5% dari Untung</p></div>
 
 <div class="grid">
-<div class="card blue"><small>TOTAL OMZET</small><b id="omzet">Rp 0</b></div>
+<div class="card blue"><small>TOTAL OMZET</small><b id="omzet">Rp 0</b><small id="omzetDetail" style="color:#64748b;font-size:11px"></small></div>
 <div class="card"><small>TOTAL MODAL</small><b id="modal">Rp 0</b></div>
 <div class="card green"><small>UNTUNG BERSIH</small><b id="untungBersih">Rp 0</b></div>
 <div class="card pink"><small>DOMPET SEDEKAH</small><b id="sedekah">Rp 0</b></div>
+</div>
+
+<!-- BOX BELANJA BARU - DI ATAS PENJUALAN -->
+<div class="box" style="border-top:4px solid #ea580c">
+<h3>🛒 Catat Pengeluaran Belanja</h3>
+<div class="row">
+<div><label>Tanggal</label><input type="date" id="tglBelanja"></div>
+<div><label>Kategori</label><select id="katBelanja"><option value="SAYUR & BAHAN DAPUR">SAYUR & BAHAN DAPUR</option><option value="SERVICE HP">SERVICE HP</option><option value="LAINNYA">LAINNYA</option></select></div>
+</div>
+<label>Nama Barang Belanja</label><input id="namaBelanja" placeholder="Contoh: Bayam 10 ikat / Cabe 1 kg">
+<label>Jumlah Belanja (Rp)</label><input type="number" id="jumlahBelanja" placeholder="0">
+<div class="hasil" style="background:#fff7ed;border-color:#fb923c">Total Belanja hari ini akan langsung mengurangi TOTAL OMZET di atas.<br>Total Belanja Semua: <b id="totalBelanjaText">Rp 0</b></div>
+<button id="btnSimpanBelanja" onclick="tambahBelanja()">SIMPAN BELANJA</button>
+<button id="btnBatalBelanja" onclick="batalEditBelanja()" style="display:none">✕ BATAL EDIT - Kembali ke Tambah Baru</button>
 </div>
 
 <div class="box">
@@ -60,6 +85,13 @@
 <div id="list"></div>
 <button onclick="exportCSV()" class="btn-outline">⬇ Download Laporan Excel (CSV)</button>
 <button onclick="hapusSemua()" class="btn-danger">Hapus Semua Data</button>
+</div>
+
+<div class="box" style="border-top:4px solid #ea580c">
+<h3>🛒 Riwayat Belanja</h3>
+<input id="cariBelanja" placeholder="Cari barang belanja..." oninput="renderBelanja()">
+<div id="listBelanja"></div>
+<button onclick="hapusSemuaBelanja()" class="btn-danger">Hapus Semua Belanja</button>
 </div>
 
 <script type="module" src="app.js"></script>
