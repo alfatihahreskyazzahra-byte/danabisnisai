@@ -204,7 +204,7 @@ window.render = function(){
   let totalBelanja=0;
   semuaBelanja.forEach(d=>{ totalBelanja+=Number(d.jumlah||0); });
   const totalOmzetBersih = totalOmzetKotor - totalBelanja;
-  const totalUntungBersih = (totalUntung - totalSedekah) - totalBelanja;
+  const totalUntungBersih = (totalUntung - totalSedekah);
 
   document.getElementById('omzet').innerText = rupiah(totalOmzetBersih);
   const detail = document.getElementById('omzetDetail');
